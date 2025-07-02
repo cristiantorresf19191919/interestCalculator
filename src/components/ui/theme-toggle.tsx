@@ -3,22 +3,29 @@ import { useState, useEffect } from "react";
 
 export default function ThemeToggle() {
   const [theme, setTheme] = useState("light");
+  const [mounted, setMounted] = useState(false);
+
   useEffect(() => {
+    setMounted(true);
     const saved = localStorage.getItem("theme");
     if (saved) setTheme(saved);
     document.documentElement.classList.toggle("dark", saved === "dark");
   }, []);
+
   const toggleTheme = () => {
     const newTheme = theme === "light" ? "dark" : "light";
     setTheme(newTheme);
     localStorage.setItem("theme", newTheme);
     document.documentElement.classList.toggle("dark", newTheme === "dark");
   };
+
+  if (!mounted) return null;
+
   return (
     <button
       aria-label="Toggle Dark Mode"
       onClick={toggleTheme}
-      className="fixed z-50 top-6 right-6 w-14 h-14 rounded-full shadow-xl flex items-center justify-center bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 transition-all duration-500 hover:scale-110 focus:outline-none"
+      className="fixed z-50 top-14 right-6 w-14 h-14 rounded-full shadow-xl flex items-center justify-center bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 transition-all duration-500 hover:scale-110 focus:outline-none"
       style={{ boxShadow: "0 4px 24px 0 rgba(80,80,180,0.10)" }}
     >
       <span className="relative w-8 h-8 flex items-center justify-center">

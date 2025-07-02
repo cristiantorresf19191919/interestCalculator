@@ -5,6 +5,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { useLoanCalculation } from "@/lib/hooks";
 import { LoanCalculation } from "@/types";
+import AmortizationTable from "@/components/ui/AmortizationTable";
 
 function LoanCalculator() {
   const searchParams = useSearchParams();
@@ -26,7 +27,6 @@ function LoanCalculator() {
 
   const handleInterestRateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
-    // Allow only numbers and a single dot
     if (/^\d*\.?\d*$/.test(value)) {
       setInterestRateInput(value);
       const num = parseFloat(value);
@@ -36,30 +36,24 @@ function LoanCalculator() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
     if (amount < minAmount || amount > maxAmount) {
       return;
     }
-
     const calculation: LoanCalculation = {
       amount: Number(amount),
       loanName: loanName || '',
       years: Number(years),
       customInterestRate: Number(interestRate),
     };
-
     await calculate(calculation);
   };
 
   const summary = result?.summary;
   const amortizationSchedule = result?.amortization_schedule;
-    
-    const router = useRouter();
+  const router = useRouter();
 
   return (
       <div className="flex flex-col items-center justify-center min-h-screen bg-gray-50 dark:bg-gray-900 p-4 transition-colors duration-500">
-          { /*Go back button*/}
-          
             <button
               onClick={() => router.back()}
               className="flex items-center gap-2 px-4 py-2 rounded-full bg-white dark:bg-gray-800 shadow-md text-gray-700 dark:text-gray-200 font-semibold mb-8 transition-all duration-300 hover:-translate-x-2 hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-400"
@@ -70,7 +64,6 @@ function LoanCalculator() {
               </svg>
               <span>Volver</span>
             </button>
-        
       <div className="w-full max-w-4xl">
         <div className="text-center mb-10">
           <h1 className="text-4xl font-bold text-gray-800 dark:text-white">Calculadora de prestamos</h1>
@@ -79,11 +72,9 @@ function LoanCalculator() {
             <span className="font-semibold text-indigo-600">{loanName}</span>
           </p>
         </div>
-
         <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-8 transition-colors duration-500">
           <form onSubmit={handleSubmit}>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-              {/* Amount Input */}
               <div>
                 <label
                   htmlFor="amount"
@@ -109,8 +100,6 @@ function LoanCalculator() {
                   {maxAmount.toLocaleString()}.
                 </p>
               </div>
-
-              {/* Years Input */}
               <div>
                 <label
                   htmlFor="years"
@@ -127,9 +116,7 @@ function LoanCalculator() {
                   min="1"
                   max="30"
                 />
-                          </div>
-
-            {/* Rate */}
+              </div>
               <div>
                 <label
                   htmlFor="interestRate"
@@ -156,10 +143,7 @@ function LoanCalculator() {
                   {maxAmount.toLocaleString()}.
                 </p>
               </div>
-                          
-              
             </div>
-
             <div className="mt-8">
               <button
                 type="submit"
@@ -171,13 +155,11 @@ function LoanCalculator() {
             </div>
           </form>
         </div>
-
         {error && (
           <div className="mt-6 text-center text-red-500 bg-red-100 p-4 rounded-lg">
             {error}
           </div>
         )}
-
         {summary && (
           <div className="mt-10 bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-8 animate-fade-in-up transition-colors duration-500">
             <h2 className="text-2xl font-bold text-center text-gray-800 dark:text-white mb-6">
@@ -223,56 +205,12 @@ function LoanCalculator() {
             </div>
           </div>
         )}
-
         {amortizationSchedule && (
-          <div className="mt-10 bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-8 animate-fade-in-up transition-colors duration-500">
+          <div className="mt-10">
             <h2 className="text-2xl font-bold text-center text-gray-800 dark:text-white mb-6">
               Plan de amortizacion
             </h2>
-            <div className="overflow-x-auto">
-              <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-                <thead className="bg-gray-50 dark:bg-gray-900">
-                  <tr>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                      Mes
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                      Pago mensual
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                      Abono a Capital
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                      Interes
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                      Saldo 
-                    </th>
-                  </tr>
-                </thead>
-                <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
-                  {amortizationSchedule.map((row) => (
-                    <tr key={row.month}>
-                      <td className="px-6 py-4 whitespace-nowrap text-gray-900 dark:text-gray-100">
-                        {row.month}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-gray-900 dark:text-gray-100">
-                        {row.monthly_payment}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-gray-900 dark:text-gray-100">
-                        {row.principal_paid}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-gray-900 dark:text-gray-100">
-                        {row.interest_paid}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-gray-900 dark:text-gray-100">
-                        {row.remaining_balance}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+            <AmortizationTable data={amortizationSchedule} />
           </div>
         )}
       </div>

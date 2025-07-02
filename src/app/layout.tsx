@@ -1,6 +1,6 @@
-import type { Metadata } from "next";
+import './globals.css';
+import { ReactNode } from 'react';
 import { Geist, Geist_Mono } from "next/font/google";
-import "./globals.css";
 import { Toaster } from "react-hot-toast";
 import ThemeToggle from "@/components/ui/theme-toggle";
 
@@ -14,16 +14,16 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-export const metadata: Metadata = {
-  title: "Your App",
-  description: "Description here",
+export const metadata = {
+  title: 'Smart Loan Manager',
+  description: 'Discover and manage loans with ease',
 };
 
 export default function RootLayout({
   children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+}: {
+  children: ReactNode;
+}) {
   return (
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased bg-white dark:bg-gray-900 transition-colors duration-500`}>

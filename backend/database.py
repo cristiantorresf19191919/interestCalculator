@@ -4,7 +4,6 @@ from .models import Loan
 
 class LoanDatabase:
     def __init__(self):
-        # Simulated database - in a real app, this would be a database connection
         self._loans: List[dict] = [
             {"id": 1, "productName": "Libranza", "minimumAmount": 5000000, "maximumAmount": 50000000, "anual_interest_rate": 0.165},
             {"id": 2, "productName": "Hipotecario Vivienda", "minimumAmount": 20000000, "maximumAmount": 500000000, "anual_interest_rate": 0.12},
